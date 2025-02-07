@@ -5,7 +5,7 @@ public class HealthManager : MonoBehaviour
 {
     public int maxLives = 3;
     private int currentLives;
-
+    public static HealthManager instance;
     public TextMeshProUGUI livesText;
     public GameObject loseGameUI; // UI hiển thị khi thua
 
@@ -46,7 +46,6 @@ public class HealthManager : MonoBehaviour
         Time.timeScale = 0f; // Dừng game
     }
 
-    // ✅ Thêm phương thức này để lấy số mạng hiện tại
     public int GetLives()
     {
         return currentLives;

@@ -8,15 +8,18 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject tornadoEffect;
     [SerializeField] float spinDuration = 3f; 
     [SerializeField] float scaleReduction = 0.5f; 
-    [SerializeField] string nextSceneName; 
+    [SerializeField] string nextSceneName;
+    
 
     private Transform player; 
 
     void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player").transform;       
+        player = GameObject.FindGameObjectWithTag("Player").transform;
+        
         TextMeshProUGUI scoreUI = GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>();
         ScoreManager.instance.SetScoreText(scoreUI);
+        
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -24,9 +27,10 @@ public class GameManager : MonoBehaviour
         if (collision.CompareTag("Done"))
         {
             StartCoroutine(HandlePlayerSpin());
-            Debug.Log("true");
         }
     }
+
+    
 
     IEnumerator HandlePlayerSpin()
     {

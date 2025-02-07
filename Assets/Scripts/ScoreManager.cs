@@ -14,11 +14,19 @@ public class ScoreManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject); // Giữ lại khi chuyển scene
+            DontDestroyOnLoad(gameObject); 
         }
         else
         {
             Destroy(gameObject);
+        }
+    }
+    void Start()
+    {
+        TextMeshProUGUI newScoreUI = GameObject.Find("ScoreText")?.GetComponent<TextMeshProUGUI>();
+        if (newScoreUI != null)
+        {
+            ScoreManager.instance.SetScoreText(newScoreUI);
         }
     }
 

@@ -16,6 +16,7 @@ public class ItemPickup : MonoBehaviour
 
             // Cộng điểm vào ScoreManager
             ScoreManager.instance.AddScore(pointsForPickup);
+            
 
             // Phát âm thanh bằng AudioSource tạm thời
             AudioSource audioSource = gameObject.AddComponent<AudioSource>();

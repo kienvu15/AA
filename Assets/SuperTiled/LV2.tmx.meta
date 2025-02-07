@@ -11,13 +11,17 @@ ScriptedImporter:
   missingFiles: []
   errors: []
   warnings:
+  - Pixels Per Unit mismatch between map (70) and tileset 'Castle.tsx' (60)
+  - Pixels Per Unit mismatch between map (70) and tileset 'Terrain (32x32).tsx' (60)
   - Tileset 'Decorations (32x32)' is an embedded tileset. Exported tilesets are preferred.
-  - Pixels Per Unit mismatch between map (60) and tileset 'Spikes.tsx' (30)
+  - Pixels Per Unit mismatch between map (70) and tileset 'Spikes.tsx' (60)
+  - Pixels Per Unit mismatch between map (70) and tileset 'Decorations (32x32).tsx'
+    (60)
   missingSortingLayers: []
   missingLayers: []
   missingTags: []
   importerVersion: 26
-  pixelsPerUnit: 60
+  pixelsPerUnit: 70
   edgesPerEllipse: 32
   numberOfObjectsImported: 88
   tilesAsObjects: 0
