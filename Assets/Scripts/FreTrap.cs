@@ -18,7 +18,7 @@ public class FireTrap : MonoBehaviour
         while (true)
         {
             // Tạo lửa
-            GameObject fire = Instantiate(firePrefab, spawnPoint.position, Quaternion.identity);
+            GameObject fire = Instantiate(firePrefab, spawnPoint.position, Quaternion.Euler(0, 0, -90));
 
             // Hủy lửa sau fireDuration giây
             Destroy(fire, fireDuration);
