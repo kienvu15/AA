@@ -7,16 +7,31 @@ public class PlayerMovement : MonoBehaviour
 {
 
     public BoxCollider2D ground;
+    Rigidbody2D rb;
+    Animator anim;
+    CapsuleCollider2D myBodyCollider;
+    BoxCollider2D myFeetCollider;
+    private float gravity;
+
+    [Header("Movement")]
     [SerializeField] float moveSpeed = 10f;
     private float moveX, moveY;
     private bool isFacingRight = true;
-
-    [SerializeField] float jumpSpeed = 5f;
-
     [SerializeField] float climbSpeed = 5f;
+    bool climb = false;
 
-    [SerializeField] Vector2 deathKick = new Vector2 (10f, 10f);
+    [Header("Jump")]
+    private bool jumping = false;
+    public float jumpForce = 13.5f;
+    private int jumpBufferCounter = 0;
+    public int jumpBufferFrames;
+    private float coyoteTimeCount = 0;
+    public float coyoteTime;
+    private float airjumpCount = 0;
+    public float maxAirJump;
+    private bool isGround;
 
+    [Header("Shot")]
     [SerializeField] float bulletSpeed = 20f;
     [SerializeField] GameObject bullet;
     [SerializeField] Transform gun;
@@ -30,19 +45,11 @@ public class PlayerMovement : MonoBehaviour
     public float dashingTime = 0.2f;
     public float dahingCooldown = 1f;
 
-
-    Rigidbody2D rb;
-    Animator anim;
-    CapsuleCollider2D myBodyCollider;
-    BoxCollider2D myFeetCollider;
-    float gravity;
-    
-
-    public bool isAlive = true;
-
-    private Vector2 respawnPoint; 
-    
     public HealthManager healthManager;
+    [SerializeField] Vector2 deathKick = new Vector2(10f, 10f);
+    public bool isAlive = true;
+    private Vector2 respawnPoint;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -55,13 +62,8 @@ public class PlayerMovement : MonoBehaviour
         respawnPoint = transform.position;
     }
 
-
-
-
     void Update()
     {
-        
-
         if (isDashing) return;
 
         ClimbLadder();
@@ -76,15 +78,39 @@ public class PlayerMovement : MonoBehaviour
 
         if ((rb.IsTouchingLayers(LayerMask.GetMask("Climbing")) || myFeetCollider.IsTouchingLayers(LayerMask.GetMask("Climbing"))) && (myFeetCollider.IsTouchingLayers(LayerMask.GetMask("Ground")) || rb.IsTouchingLayers(LayerMask.GetMask("Ground"))) && moveY != 0)
         {
-            ground.isTrigger = true; // Biến ground thành trigger
+            ground.isTrigger = true;
             Debug.Log("true");
         }
         else
         {
-            ground.isTrigger = false; // Trả lại trạng thái bình thường nếu không thỏa mãn
+            ground.isTrigger = false;
         }
     }
+    public void Move()
+    {
+        if (!isAlive) { return; }
+        if (isDashing || knockbak) return;
 
+        moveX = Input.GetAxisRaw("Horizontal");
+        moveY = Input.GetAxisRaw("Vertical");
+        Vector2 movement = new Vector2(moveX * moveSpeed, rb.linearVelocity.y);
+        rb.linearVelocity = movement;
+
+        anim.SetBool("isRunning", moveX != 0);
+    }
+
+    void Flip()
+    {
+        if ((moveX > 0 && !isFacingRight) || (moveX < 0 && isFacingRight))
+        {
+            isFacingRight = !isFacingRight;
+
+
+            Vector3 scale = transform.localScale;
+            scale.x *= -1;
+            transform.localScale = scale;
+        }
+    }
     public void StartDash()
     {
         if (Input.GetKeyDown(KeyCode.V) && canDash)
@@ -97,7 +123,6 @@ public class PlayerMovement : MonoBehaviour
     {
         anim.SetBool("isDashing", true);
         anim.SetTrigger("Roll");
-
         canDash = false;
         isDashing = true;
         float originalGravity = rb.gravityScale;
@@ -115,42 +140,7 @@ public class PlayerMovement : MonoBehaviour
         anim.ResetTrigger("Roll");
         anim.SetBool("isDashing", false);
     }
-    public void Move()
-    {
-        if (!isAlive) { return; }
-        if (isDashing || knockbak) return;
-
-        moveX = Input.GetAxisRaw("Horizontal");
-        moveY = Input.GetAxisRaw("Vertical");
-        Vector2 movement = new Vector2(moveX * moveSpeed, rb.linearVelocity.y);
-        rb.linearVelocity = movement;
-
-        anim.SetBool("isRunning", moveX != 0);
-    }
-    void Flip()
-    {
-        if ((moveX > 0 && !isFacingRight) || (moveX < 0 && isFacingRight))
-        {
-            isFacingRight = !isFacingRight;
-
-     
-            Vector3 scale = transform.localScale;
-            scale.x *= -1;
-            transform.localScale = scale;
-        }
-    }
-
-    [Header("Jump")]
-    private bool jumping = false;
-    public float jumpForce = 13.5f;
-    private int jumpBufferCounter = 0;
-    public int jumpBufferFrames;
-    private float coyoteTimeCount = 0;
-    public float coyoteTime;
-    private float airjumpCount = 0;
-    public float maxAirJump;
-
-    private bool isGround;
+    
     public void Jump()
     {
         if (isDashing || knockbak) return;
@@ -229,6 +219,7 @@ public class PlayerMovement : MonoBehaviour
             anim.SetBool("Fall", false);
         }
     }
+
     void OnShot()
     {
         if (!isAlive) { return; }
@@ -265,9 +256,6 @@ public class PlayerMovement : MonoBehaviour
         canShot = true;
     }
 
-
-    bool climb=false;
-
     void ClimbLadder()
     {
         if (rb.IsTouchingLayers(LayerMask.GetMask("Climbing")) && moveY != 0)
@@ -275,8 +263,6 @@ public class PlayerMovement : MonoBehaviour
 
             anim.SetBool("isClimbing", true);
             climb = true;
-
-
         }
         else if (!myFeetCollider.IsTouchingLayers(LayerMask.GetMask("Climbing")) || myFeetCollider.IsTouchingLayers(LayerMask.GetMask("Ground")))
         {
@@ -307,7 +293,7 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
-
+    [SerializeField] AudioClip pickupSound;
     void Die()
     {
         if (myBodyCollider.IsTouchingLayers(LayerMask.GetMask("Enemies", "Hazards")))
@@ -317,13 +303,15 @@ public class PlayerMovement : MonoBehaviour
             isAlive = false;
             anim.SetTrigger("Dying");
 
+            AudioSource audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.clip = pickupSound;
+            audioSource.Play();
+
             Collider2D collider = Physics2D.OverlapCircle(transform.position, 0.1f, LayerMask.GetMask("Enemies", "Hazards"));
             if (collider != null)
             {
                 ApplyKnockback(collider.transform.position);
             }
-
-            // Gọi HealthManager để trừ mạng
             HealthManager healthManager = FindFirstObjectByType<HealthManager>();
             if (healthManager != null)
             {
@@ -331,17 +319,10 @@ public class PlayerMovement : MonoBehaviour
             }
 
             ResetAllFallPlatforms();
-
-            // Lấy độ dài animation "Dying" rồi mới respawn
             float dieAnimLength = anim.GetCurrentAnimatorStateInfo(0).length;
             StartCoroutine(Respawn(dieAnimLength));
         }
     }
-
-    
-
-
-
 
     public void UpDateCheckpoint(Vector2 pos)
     {
@@ -352,42 +333,26 @@ public class PlayerMovement : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
         rb.simulated = false;
 
-        // Đợi hết thời gian của animation "Dying"
         yield return new WaitForSeconds(duration);
 
-        // Hồi sinh
         transform.position = respawnPoint;
         rb.simulated = true;
         isAlive = true;
 
-        // Reset animation về trạng thái bình thường
         ResetAnimation();
     }
 
-
     void ResetAnimation()
     {
-        // Reset trigger "Dying"
         anim.ResetTrigger("Dying");
-
-        // Đặt lại các trạng thái animation về mặc định
         anim.SetBool("isRunning", false);
         anim.SetBool("isClimbing", false);
         anim.SetBool("Jump", false);
         anim.SetBool("Fall", false);
         anim.SetBool("isDashing", false);
         anim.SetBool("isShotting", false);
-
-        // Đảm bảo animation trở về trạng thái Idle hoặc mặc định
         anim.Play("Idling"); 
     }
-
-    
-
-
-
-
-
 
     private bool knockbak = false;
     public void ApplyKnockback(Vector3 sourcePosition)
@@ -403,9 +368,6 @@ public class PlayerMovement : MonoBehaviour
         // Bắt đầu khôi phục trạng thái
         StartCoroutine(KnockbackRecovery(0.5f));
     }
-
-
-
     private IEnumerator KnockbackRecovery(float duration)
     {
         yield return new WaitForSeconds(duration);
