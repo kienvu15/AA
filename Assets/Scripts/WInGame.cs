@@ -7,4 +7,10 @@ public class WInGame : MonoBehaviour
     {
         SceneManager.LoadScene("LV1"); // Load màn 1
     }
+
+    public void MainMenu()
+    {
+        
+        SceneManager.LoadScene("Menu");
+    }
 }
