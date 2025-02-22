@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class FallPlatform : MonoBehaviour
+public class FallPlatform1 : MonoBehaviour
 {
     public float fallDelay = 1f;
     private float destroyDelay = 2f;
@@ -11,14 +11,21 @@ public class FallPlatform : MonoBehaviour
     private Quaternion initialRotation;
     private RigidbodyType2D initialBodyType;
     private bool hasFallen = false;
+    public PlayerMovement player;
 
-    private void Start()
+    private void Update()
+    {
+        if(hasFallen == true && player.isAlive == false)
+        {
+            ResetFallPlatform();
+        }
+    }
+
+    void Start()
     {
         initialPosition = transform.position;
         initialRotation = transform.rotation;
         initialBodyType = rb.bodyType;
-
-        FallPlatformManager.Instance.RegisterPlatform(this);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -43,12 +50,15 @@ public class FallPlatform : MonoBehaviour
         StopAllCoroutines();
         gameObject.SetActive(true);
 
+        // Reset lại Rigidbody đúng cách
         rb.bodyType = RigidbodyType2D.Kinematic;
-        rb.linearVelocity = Vector2.zero;
+        rb.linearVelocity = Vector2.zero; // Để tránh nền rơi tiếp do động lực trước đó
         rb.angularVelocity = 0f;
 
+        // Reset lại vị trí và trạng thái
         transform.position = initialPosition;
         transform.rotation = initialRotation;
         hasFallen = false;
     }
+
 }

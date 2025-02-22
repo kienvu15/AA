@@ -9,6 +9,7 @@ TagManager:
   - Ground
   - CheckPoint
   - FallGround
+  - FallGround1
   layers:
   - Default
   - TransparentFX

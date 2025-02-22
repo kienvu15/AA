@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -282,7 +283,6 @@ public class PlayerMovement : MonoBehaviour
     void ResetAllFallPlatforms()
     {
         GameObject[] fallPlatforms = GameObject.FindGameObjectsWithTag("FallGround");
-        Debug.Log($"Found {fallPlatforms.Length} FallPlatforms to reset.");
 
         foreach (GameObject fallPlatform in fallPlatforms)
         {
@@ -293,6 +293,7 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
+
     [SerializeField] AudioClip pickupSound;
     void Die()
     {
@@ -317,17 +318,12 @@ public class PlayerMovement : MonoBehaviour
             {
                 healthManager.LoseLife();
             }
-
-            ResetAllFallPlatforms();
+            
             float dieAnimLength = anim.GetCurrentAnimatorStateInfo(0).length;
             StartCoroutine(Respawn(dieAnimLength));
         }
     }
-
-    public void UpDateCheckpoint(Vector2 pos)
-    {
-        respawnPoint = pos;
-    }
+    public bool reswapm = false;
     public IEnumerator Respawn(float duration)
     {
         rb.linearVelocity = Vector2.zero;
@@ -340,7 +336,17 @@ public class PlayerMovement : MonoBehaviour
         isAlive = true;
 
         ResetAnimation();
+        FallPlatformManager.Instance.ResetAllPlatforms(); // Reset nền rơi khi hồi sinh
     }
+
+
+
+
+    public void UpDateCheckpoint(Vector2 pos)
+    {
+        respawnPoint = pos;
+    }
+    
 
     void ResetAnimation()
     {
