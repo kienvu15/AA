@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] GameObject tornadoEffect;
-    [SerializeField] float spinDuration = 3f; 
+    [SerializeField] float spinDuration = 5f; 
     [SerializeField] float scaleReduction = 0.5f; 
     [SerializeField] string nextSceneName;
     

@@ -6,6 +6,8 @@ using UnityEngine.UIElements;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [SerializeField] AudioClip jumpSound;
+    private AudioSource audioSource;
 
     public BoxCollider2D ground;
     Rigidbody2D rb;
@@ -58,7 +60,7 @@ public class PlayerMovement : MonoBehaviour
         myBodyCollider = GetComponent<CapsuleCollider2D>();
         myFeetCollider = GetComponent<BoxCollider2D>();
         gravity = rb.gravityScale;
-
+        audioSource = GetComponent<AudioSource>();
         // Đặt vị trí hồi sinh ban đầu là vị trí bắt đầu game
         respawnPoint = transform.position;
     }
@@ -159,13 +161,20 @@ public class PlayerMovement : MonoBehaviour
                 jumping = true;
                 isGround = false;
                 jumpBufferCounter = 0;
+
+                // Phát âm thanh khi nhảy
+                audioSource.PlayOneShot(jumpSound);
             }
             else if (!isGround && airjumpCount < maxAirJump && Input.GetKeyDown(KeyCode.Space))
             {
                 airjumpCount++;
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
                 jumping = true;
+
+                // Phát âm thanh khi nhảy trên không
+                audioSource.PlayOneShot(jumpSound);
             }
+
         }
     }
 
