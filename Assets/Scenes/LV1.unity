@@ -2278,6 +2278,10 @@ PrefabInstance:
       propertyPath: pickupSound
       value: 
       objectReference: {fileID: 8300000, guid: b7af5163b49e11343b124078f9bc888a, type: 3}
+    - target: {fileID: 3399046566917759748, guid: 6c2836b46987c9245be99c8e2becb1cc, type: 3}
+      propertyPath: nextSceneName
+      value: LV2
+      objectReference: {fileID: 0}
     - target: {fileID: 4705692559742257568, guid: 6c2836b46987c9245be99c8e2becb1cc, type: 3}
       propertyPath: m_Name
       value: A-Player

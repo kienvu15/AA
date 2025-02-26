@@ -43,6 +43,12 @@ public class ScoreManager : MonoBehaviour
         UpdateScoreUI();
     }
 
+    public int GetScore()
+    {
+        return currentScore;
+    }
+
+
     public void ResetScore()
     {
         currentScore = 0;
