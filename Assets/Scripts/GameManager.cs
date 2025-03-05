@@ -27,6 +27,7 @@ public class GameManager : MonoBehaviour
         if (collision.CompareTag("Done"))
         {
             StartCoroutine(HandlePlayerSpin());
+
         }
     }
 
@@ -54,6 +55,8 @@ public class GameManager : MonoBehaviour
         player.localScale = originalScale;
 
         Destroy(tornado);
+
         SceneManager.LoadScene(nextSceneName);
+        
     }
 }

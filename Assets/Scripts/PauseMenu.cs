@@ -5,6 +5,12 @@ public class PauseMenu : MonoBehaviour
 {
     public GameObject pauseMenuUI; // Gán Canvas PauseMenu vào đây
     private bool isPaused = false;
+    ScoreManager scoreManager;
+
+    void Start()
+    {
+        scoreManager = GameObject.Find("ScoreManager").GetComponent<ScoreManager>();
+    }
 
     void Update()
     {
@@ -35,5 +41,6 @@ public class PauseMenu : MonoBehaviour
     {
         Time.timeScale = 1f; // Đảm bảo thời gian chạy bình thường khi load scene mới
         SceneManager.LoadScene(0); // Scene 0 là Menu chính
+        scoreManager.ResetScore();
     }
 }
